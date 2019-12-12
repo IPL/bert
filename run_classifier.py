@@ -251,6 +251,59 @@ class XnliProcessor(DataProcessor):
     """See base class."""
     return ["contradiction", "entailment", "neutral"]
 
+class SimProcessor(DataProcessor):
+  """Processor for the Sim task"""
+
+  # read tsv
+  def get_train_examples(self, data_dir):
+    """See base class."""
+    lines = self._read_tsv(os.path.join(data_dir, "train.tsv"))
+    train_data = []
+    for (i, line) in enumerate(lines):
+      if i == 0:
+        continue
+      guid = "train-%d" % (i)
+      text_a = tokenization.convert_to_unicode(line[1])
+      # text_b = tokenization.convert_to_unicode(line[7])
+      label = tokenization.convert_to_unicode(line[0])
+      train_data.append(
+          InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+    return train_data
+
+  # read tsv
+  def get_dev_examples(self, data_dir):
+    """See base class."""
+    lines = self._read_tsv(os.path.join(data_dir, "dev.tsv"))
+    dev_data = []
+    for (i, line) in enumerate(lines):
+        if i == 0:
+            continue
+        guid = "dev-%d" % (i)
+        text_a = tokenization.convert_to_unicode(line[1])
+        # text_b = tokenization.convert_to_unicode(line[7])
+        label = tokenization.convert_to_unicode(line[0])
+        dev_data.append(
+                InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+    return dev_data
+
+  # read tsv
+  def get_test_examples(self, data_dir):
+    """See base class."""
+    lines = self._read_tsv(os.path.join(data_dir, "test.tsv"))
+    test_data = []
+    for (i, line) in enumerate(lines):
+        if i == 0:
+            continue
+        guid = "test-%d" % (i)
+        text_a = tokenization.convert_to_unicode(line[1])
+        # text_b = tokenization.convert_to_unicode(line[7])
+        label = tokenization.convert_to_unicode(line[0])
+        test_data.append(
+            InputExample(guid=guid, text_a=text_a, text_b=None, label=label))
+    return test_data
+
+  def get_labels(self):
+    return ['0', '1']
 
 class MnliProcessor(DataProcessor):
   """Processor for the MultiNLI data set (GLUE version)."""
@@ -788,6 +841,7 @@ def main(_):
       "mnli": MnliProcessor,
       "mrpc": MrpcProcessor,
       "xnli": XnliProcessor,
+      "sim": SimProcessor,
   }
 
   tokenization.validate_case_matches_checkpoint(FLAGS.do_lower_case,
